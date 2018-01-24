@@ -1,5 +1,6 @@
 package org.infinispan.creson;
 
+import org.example.Room;
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.Index;
@@ -150,23 +151,27 @@ public class Server {
     builder.read(cm.getDefaultCacheConfiguration());
     builder.indexing().index(Index.LOCAL);
     builder.indexing().addIndexedEntity(Room.class);
+    Room r = new Room(3);
+    System.out.println("treasure "+ r.getTreasure());
     builder.indexing().enable();
     builder.persistence().clearStores().passivation(false);
 
-    StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
+  //  StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
     builder.compatibility().enabled(true); // for HotRod
     builder.clustering().stateTransfer().chunkSize(100);
-    // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+
+   // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
     cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
-    stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
+  // stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
 
-    cm.getCache(CRESON_CACHE_NAME).put('a', new Room(123));
-    QueryFactory factory = Search.getQueryFactory(cm.getCache(CRESON_CACHE_NAME));
-    Query q = factory.from(Room.class).build();
-    System.out.println(q.list());
+      System.out.println("LAUNCHED");
 
-//
-//    System.out.println("LAUNCHED");
+        cm.getCache(CRESON_CACHE_NAME).put('a', new Room(123));
+        QueryFactory factory = Search.getQueryFactory(cm.getCache(CRESON_CACHE_NAME));
+        Query q = factory.from(org.example.Room.class).build();
+        System.out.println(q.list());
+
+
 //
 //    SignalHandler sh = s -> {
 //      System.out.println("CLOSING");

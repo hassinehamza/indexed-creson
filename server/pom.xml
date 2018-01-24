@@ -127,6 +127,20 @@
             <artifactId>testng</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-codecs -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>5.4.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>treasureRush</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>
