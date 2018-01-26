@@ -1,1 +1,1 @@
-org.infinispan.creson.server.QueryFacadeImpl
+org.infinispan.creson.query.QueryFacadeImpl

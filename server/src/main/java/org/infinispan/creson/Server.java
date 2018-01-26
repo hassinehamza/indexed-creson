@@ -154,7 +154,7 @@ public class Server {
 
 
         builder.read(cm.getDefaultCacheConfiguration());
-        builder.indexing().index(Index.LOCAL);;
+        builder.indexing().index(Index.LOCAL);
         builder.indexing().addIndexedEntity(Room.class);
         builder.indexing().enable();
         //builder.security().authorization().role("admin");
