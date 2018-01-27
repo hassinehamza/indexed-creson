@@ -1,7 +1,5 @@
 package org.infinispan.creson.search;
 
-import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericContainer;
 import org.infinispan.client.hotrod.impl.RemoteCacheImpl;
 import org.infinispan.commons.CacheException;
 import org.infinispan.query.dsl.Query;
@@ -20,7 +18,6 @@ public class QueryFactory extends BaseQueryFactory {
     @Override
     public Query create(String jpqlString) {
         return new RemoteQuery(cache, jpqlString,  -1L, -1);
-        //return null;
     }
 
     @Override

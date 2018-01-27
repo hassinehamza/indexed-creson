@@ -1,6 +1,6 @@
 package org.infinispan.creson;
 
-import org.example.Room;
+
 import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.Index;
@@ -155,7 +155,7 @@ public class Server {
 
         builder.read(cm.getDefaultCacheConfiguration());
         builder.indexing().index(Index.LOCAL);
-        builder.indexing().addIndexedEntity(Room.class);
+        builder.indexing().addIndexedEntity(Obj.class);
         builder.indexing().enable();
         //builder.security().authorization().role("admin");
         builder.persistence().clearStores().passivation(false);
@@ -164,14 +164,14 @@ public class Server {
         builder.compatibility().enabled(true); // for HotRod
         builder.clustering().stateTransfer().chunkSize(100);
 
-        // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+       // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
         cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
         stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
 
 
         System.out.println("LAUNCHED");
 
-        cm.getCache(CRESON_CACHE_NAME).put(7, new Room(121));
+        cm.getCache(CRESON_CACHE_NAME).put(7, new Obj(121));
 //        QueryFactory factory = Search.getQueryFactory(cm.getCache(CRESON_CACHE_NAME));
 //        Query q = factory.from(org.example.Room.class).build();
 //        System.out.println(q.list());

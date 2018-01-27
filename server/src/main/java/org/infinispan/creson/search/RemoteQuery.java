@@ -1,8 +1,10 @@
 package org.infinispan.creson.search;
 
-import org.apache.avro.Schema;
 import org.infinispan.client.hotrod.impl.RemoteCacheImpl;
 import org.infinispan.client.hotrod.impl.operations.OperationsFactory;
+import org.infinispan.creson.Obj;
+import org.infinispan.creson.query.CresonResponse;
+import org.infinispan.creson.server.Marshalling;
 import org.infinispan.query.dsl.Query;
 
 import java.net.InetSocketAddress;
@@ -14,7 +16,6 @@ public class RemoteQuery implements Query{
 
     protected RemoteCacheImpl cache;
     protected String jpqlString;
-    protected Schema schemaName;
     protected long startOffset; //FIXME can this really be long or it has to be int due to limitations in query module?
     protected InetSocketAddress location;
     protected List results;
@@ -29,11 +30,11 @@ public class RemoteQuery implements Query{
     }
 
     @Override
-    public <T> List<T> list() {
+    public List<Object> list() {
         List<Object> results ;
-     //   QueryOperation op = ((OperationsFactory)cache.getOperationsFactory()).newCresonQueryOperation(this);
-
-        return null;
+        QueryOperation op = ((OperationsFactory)cache.getOperationsFactory()).newCresonQueryOperation(this);
+        CresonResponse response = op.execute();
+        return response.getResults();
     }
 
     @Override

@@ -116,11 +116,12 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>infinispan-client-hotrod</artifactId>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>${project.groupId}</groupId>-->
+            <!--<artifactId>infinispan-client-hotrod</artifactId>-->
+            <!--<version>9.0.3.Final</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -134,12 +135,11 @@
             <version>5.4.1</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>treasureRush</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.infinispan</groupId>-->
+            <!--<artifactId>infinispan-client-hotrod</artifactId>-->
+            <!--<version>9.0.3.Final</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 
