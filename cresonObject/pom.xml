@@ -40,6 +40,12 @@
         <artifactId>infinispan-creson-client</artifactId>
         <version>9.0.3.Final</version>
     </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-remote</artifactId>
+            <version>9.1.2.Final</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

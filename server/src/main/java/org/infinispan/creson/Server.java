@@ -5,6 +5,7 @@ import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.Index;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.creson.object.Obj;
 import org.infinispan.creson.server.StateMachineInterceptor;
 import org.infinispan.creson.utils.ConfigurationHelper;
 import org.infinispan.interceptors.impl.CallInterceptor;
@@ -133,48 +134,47 @@ public class Server {
         server.start(hbuilder.build(), cm);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.schedule((Callable<Void>) () -> {
-            while (true) {
-                File folder = new File(userLib);
-                File[] listOfFiles = folder.listFiles();
-                for (File file : listOfFiles) {
-                    if (file.isFile() && file.getName().matches(".*\\.jar")) {
-                        loadLibrary(file);
-                    }
-                }
-                Thread.sleep(1000);
-            }
-        }, 1, TimeUnit.SECONDS);
+//        scheduler.schedule((Callable<Void>) () -> {
+//            while (true) {
+//                File folder = new File(userLib);
+//                File[] listOfFiles = folder.listFiles();
+//                for (File file : listOfFiles) {
+//                    if (file.isFile() && file.getName().matches(".*\\.jar")) {
+//                        loadLibrary(file);
+//                    }
+//                }
+//                Thread.sleep(1000);
+//            }
+//        }, 1, TimeUnit.SECONDS);
+//
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        File folder = new File(userLib);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            if (file.isFile() && file.getName().matches(".*\\.jar")) {
+                loadLibrary(file);
+            }
         }
 
-//        File folder = new File(userLib);
-//        File[] listOfFiles = folder.listFiles();
-//        for (File file : listOfFiles) {
-//            if (file.isFile() && file.getName().matches(".*\\.jar")) {
-//                loadLibrary(file);
-//            }
-//        }
-
         builder.read(cm.getDefaultCacheConfiguration());
-//        builder.indexing().index(Index.LOCAL);
-//        for(Class clazz : indexedClasses) {
-//            System.out.println("clazz " + clazz);
-//            builder.indexing().addIndexedEntity(clazz);
-//        }
-//
-//        builder.indexing().enable();
+        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
+        builder.compatibility().enabled(true); // for HotRod
+        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+         builder.indexing().index(Index.LOCAL);
+        for(Class clazz : indexedClasses) {
+            System.out.println("clazz " + clazz);
+            builder.indexing().addIndexedEntity(clazz);
+        }
+        builder.indexing().enable();
         builder.persistence().clearStores().passivation(false);
 
-
-        builder.compatibility().enabled(true); // for HotRod
         builder.clustering().stateTransfer().chunkSize(100);
-        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
-        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+
         cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
         stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
 
@@ -218,6 +218,7 @@ public class Server {
                     Class<?> clazz;
                     try {
                         clazz = Class.forName(str);
+
                         if (clazz.isAnnotationPresent(org.hibernate.search.annotations.Indexed.class)) {
                             indexed.add(clazz);
                         }

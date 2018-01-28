@@ -49,13 +49,14 @@ public class QueryTest {
         cache.put(7, obj2);
         cache.put(9, obj3);
 
+        System.out.println(cache.get(6));
 
         QueryFactory qf = Search.getQueryFactory(cache);
         Query q1 = qf.create("from org.infinispan.creson.object.Obj o where o.x = 10");
-        System.out.println("list query 1" + q1.list());
+        System.out.println("creson query 1ist" + q1.list());
 
         Query q2 = qf.create("from org.infinispan.creson.object.Obj o where o.x = 5");
-        System.out.println("list query 1" + q2.list());
+        System.out.println("infinispan query 1ist" + q2.list());
 
 
         System.out.println("query sent");
