@@ -133,29 +133,41 @@ public class Server {
         server.start(hbuilder.build(), cm);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.schedule((Callable<Void>) () -> {
-            while (true) {
-                File folder = new File(userLib);
-                File[] listOfFiles = folder.listFiles();
-                for (File file : listOfFiles) {
-                    if (file.isFile() && file.getName().matches(".*\\.jar")) {
-                        loadLibrary(file);
-                    }
-                }
-                Thread.sleep(1000);
+//        scheduler.schedule((Callable<Void>) () -> {
+//            while (true) {
+//                File folder = new File(userLib);
+//                File[] listOfFiles = folder.listFiles();
+//                for (File file : listOfFiles) {
+//                    if (file.isFile() && file.getName().matches(".*\\.jar")) {
+//                        loadLibrary(file);
+//                    }
+//                }
+//                Thread.sleep(1000);
+//            }
+//        }, 1, TimeUnit.SECONDS);
+//
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        File folder = new File(userLib);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            if (file.isFile() && file.getName().matches(".*\\.jar")) {
+                loadLibrary(file);
             }
-        }, 1, TimeUnit.SECONDS);
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-
 
         builder.read(cm.getDefaultCacheConfiguration());
         builder.indexing().index(Index.LOCAL);
-        builder.indexing().addIndexedEntity(Obj.class);
+
+        for(Class clazz : indexedClasses) {
+            System.out.println("indexed clazz " + clazz);
+            builder.indexing().addIndexedEntity(clazz);
+        }
+       // builder.indexing().addIndexedEntity(Obj.class);
         builder.indexing().enable();
         //builder.security().authorization().role("admin");
         builder.persistence().clearStores().passivation(false);
@@ -171,7 +183,7 @@ public class Server {
 
         System.out.println("LAUNCHED");
 
-        cm.getCache(CRESON_CACHE_NAME).put(7, new Obj(121));
+//        cm.getCache(CRESON_CACHE_NAME).put(7, new Obj(121));
 //        QueryFactory factory = Search.getQueryFactory(cm.getCache(CRESON_CACHE_NAME));
 //        Query q = factory.from(org.example.Room.class).build();
 //        System.out.println(q.list());

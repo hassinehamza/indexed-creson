@@ -141,6 +141,22 @@
             <!--<version>9.0.3.Final</version>-->
         <!--</dependency>-->
 
+
+        <dependency>
+            <groupId>inifinispan-creson-serialization</groupId>
+            <artifactId>server-creson-serialization</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>inifinispan-creson-serialization</groupId>
+            <artifactId>hotrod-creson-serialization</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
 
     <build>

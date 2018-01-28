@@ -6,7 +6,7 @@ import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.creson.Factory;
 import org.infinispan.creson.Obj;
-import org.infinispan.creson.search.Search;
+import org.infinispan.hotrod.creson.serialization.Search;
 import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryFactory;
 import org.testng.annotations.BeforeMethod;
@@ -43,7 +43,7 @@ public class QueryTest {
         cache.put(7, new Obj(5));
         cache.put(9, new Obj(7));
 
-        QueryFactory qf = Search.getQueryFactory(cache);
+       QueryFactory qf = Search.getQueryFactory(cache);
         System.out.println("get " + cache.get(5));
 
         Query q = qf.create("from org.infinispan.creson.Obj o where o.x = 5");
