@@ -164,7 +164,7 @@ public class Server {
         builder.compatibility().enabled(true); // for HotRod
         builder.clustering().stateTransfer().chunkSize(100);
 
-       // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+       builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
         cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
         stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
 
