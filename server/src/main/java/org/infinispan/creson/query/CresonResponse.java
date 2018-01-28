@@ -1,9 +1,6 @@
 package org.infinispan.creson.query;
 
-import org.infinispan.creson.Obj;
-
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 public class CresonResponse implements Serializable {

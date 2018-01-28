@@ -134,6 +134,11 @@
             <artifactId>lucene-core</artifactId>
             <version>5.4.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>cresonObject</artifactId>
+            <version>9.0.3.Final</version>
+        </dependency>
 
         <!--<dependency>-->
             <!--<groupId>org.infinispan</groupId>-->

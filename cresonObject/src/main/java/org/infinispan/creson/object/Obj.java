@@ -1,7 +1,10 @@
-package org.infinispan.creson;
+package org.infinispan.creson.object;
+
+
 
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,10 +14,14 @@ import java.io.Serializable;
 @Entity
 public class Obj implements Serializable{
 
+    public int getX() {
+        return x;
+    }
 
-    @Field
     @Id
+    @Field
     int x ;
+
     String name;
 
     public Obj(String name, int x) {
@@ -28,6 +35,6 @@ public class Obj implements Serializable{
 
     @Override
     public String toString() {
-        return name;
+        return name + ", x =" + x;
     }
 }

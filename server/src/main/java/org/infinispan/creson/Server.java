@@ -152,29 +152,35 @@ public class Server {
             e.printStackTrace();
         }
 
+//        File folder = new File(userLib);
+//        File[] listOfFiles = folder.listFiles();
+//        for (File file : listOfFiles) {
+//            if (file.isFile() && file.getName().matches(".*\\.jar")) {
+//                loadLibrary(file);
+//            }
+//        }
 
         builder.read(cm.getDefaultCacheConfiguration());
-        builder.indexing().index(Index.LOCAL);
-        builder.indexing().addIndexedEntity(Obj.class);
-        builder.indexing().enable();
-        //builder.security().authorization().role("admin");
+//        builder.indexing().index(Index.LOCAL);
+//        for(Class clazz : indexedClasses) {
+//            System.out.println("clazz " + clazz);
+//            builder.indexing().addIndexedEntity(clazz);
+//        }
+//
+//        builder.indexing().enable();
         builder.persistence().clearStores().passivation(false);
 
-        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
+
         builder.compatibility().enabled(true); // for HotRod
         builder.clustering().stateTransfer().chunkSize(100);
-
-       // builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
+        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
         cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
         stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
 
 
         System.out.println("LAUNCHED");
 
-        cm.getCache(CRESON_CACHE_NAME).put(7, new Obj(121));
-//        QueryFactory factory = Search.getQueryFactory(cm.getCache(CRESON_CACHE_NAME));
-//        Query q = factory.from(org.example.Room.class).build();
-//        System.out.println(q.list());
 
         SignalHandler sh = s -> {
             System.out.println("CLOSING");
@@ -206,7 +212,7 @@ public class Server {
         try {
             jarFile = new JarInputStream(new FileInputStream(jar));
             while ((jarEntry = jarFile.getNextJarEntry()) != null) {
-                if (jarEntry.getName().contains("example") && jarEntry.getName().endsWith(".class")) {
+                if (jarEntry.getName().endsWith(".class")) {
                     String str = jarEntry.getName().replace('/', '.').substring(0,
                             jarEntry.getName().length() - 6);
                     Class<?> clazz;

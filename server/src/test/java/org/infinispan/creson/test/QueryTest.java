@@ -5,7 +5,8 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.creson.Factory;
-import org.infinispan.creson.Obj;
+import org.infinispan.creson.object.CresonObject;
+import org.infinispan.creson.object.Obj;
 import org.infinispan.creson.search.Search;
 import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryFactory;
@@ -38,16 +39,24 @@ public class QueryTest {
         RemoteCacheManager cacheManager = new RemoteCacheManager(builder.build());
 
         RemoteCache cache = cacheManager.getCache(CRESON_CACHE_NAME);
-        cache.put(5, new Obj(5));
-        cache.put(6, new Obj(5));
-        cache.put(7, new Obj(5));
-        cache.put(9, new Obj(7));
+        Obj obj1 = new Obj("obj1",5);
+        Obj obj2 = new Obj("obj2",7);
+        Obj obj3 = new Obj("obj3",5);
+        Obj obj4 = new Obj("obj4",10);
+
+        CresonObject cr1 = new CresonObject(obj4);
+        cache.put(6, obj1);
+        cache.put(7, obj2);
+        cache.put(9, obj3);
+
 
         QueryFactory qf = Search.getQueryFactory(cache);
-        System.out.println("get " + cache.get(5));
+        Query q1 = qf.create("from org.infinispan.creson.object.Obj o where o.x = 10");
+        System.out.println("list query 1" + q1.list());
 
-        Query q = qf.create("from org.infinispan.creson.Obj o where o.x = 5");
-        System.out.println("list" + q.list());
+        Query q2 = qf.create("from org.infinispan.creson.object.Obj o where o.x = 5");
+        System.out.println("list query 1" + q2.list());
+
 
         System.out.println("query sent");
     }

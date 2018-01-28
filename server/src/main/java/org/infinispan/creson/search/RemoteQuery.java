@@ -2,13 +2,10 @@ package org.infinispan.creson.search;
 
 import org.infinispan.client.hotrod.impl.RemoteCacheImpl;
 import org.infinispan.client.hotrod.impl.operations.OperationsFactory;
-import org.infinispan.creson.Obj;
 import org.infinispan.creson.query.CresonResponse;
-import org.infinispan.creson.server.Marshalling;
 import org.infinispan.query.dsl.Query;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
