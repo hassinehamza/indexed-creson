@@ -18,9 +18,9 @@ public class Obj{
 
     @Id
     @Field
-    int x ;
+    public int x ;
 
-    String name;
+    public String name;
 
     public Obj() {}
 

@@ -43,6 +43,7 @@ public class QueryTest {
         Obj obj3 = new Obj("obj3",5);
         Obj obj4 = new Obj("obj4",10);
         obj1.setX(5);
+        obj1.setX(5);
         obj2.toString();
 
 
