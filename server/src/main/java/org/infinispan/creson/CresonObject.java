@@ -1,13 +1,10 @@
-package org.infinispan.creson.object;
+package org.infinispan.creson;
 
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CresonObject {
 
 
-   // @Shared
+   @Shared
     public Obj obj;
 
     public CresonObject(Obj obj) {

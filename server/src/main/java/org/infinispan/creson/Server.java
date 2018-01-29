@@ -5,16 +5,11 @@ import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.Index;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.creson.object.Obj;
 import org.infinispan.creson.server.StateMachineInterceptor;
 import org.infinispan.creson.utils.ConfigurationHelper;
 import org.infinispan.interceptors.impl.CallInterceptor;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.query.Search;
-import org.infinispan.query.dsl.Query;
-import org.infinispan.query.dsl.QueryFactory;
-import org.infinispan.registry.InternalCacheRegistry;
 import org.infinispan.server.hotrod.HotRodServer;
 import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
 import org.infinispan.util.logging.Log;
@@ -29,11 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -164,12 +156,13 @@ public class Server {
         builder.read(cm.getDefaultCacheConfiguration());
         StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
         builder.compatibility().enabled(true); // for HotRod
-        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+       builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
          builder.indexing().index(Index.LOCAL);
-        for(Class clazz : indexedClasses) {
-            System.out.println("clazz " + clazz);
-            builder.indexing().addIndexedEntity(clazz);
-        }
+//        for(Class clazz : indexedClasses) {
+//            System.out.println("clazz " + clazz);
+//            builder.indexing().addIndexedEntity(clazz);
+//        }
+        builder.indexing().addIndexedEntity(Obj.class);
         builder.indexing().enable();
         builder.persistence().clearStores().passivation(false);
 

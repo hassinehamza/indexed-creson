@@ -1,4 +1,4 @@
-package org.infinispan.creson.object;
+package org.infinispan.creson;
 
 
 
@@ -8,11 +8,11 @@ import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.Serializable;
+
 
 @Entity
 @Indexed
-public class Obj implements Serializable{
+public class Obj{
 
 
 

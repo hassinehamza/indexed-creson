@@ -11,7 +11,8 @@ import java.util.List;
 public class QueryFacadeImpl implements org.infinispan.server.core.QueryFacade{
     @Override
     public byte[] query(AdvancedCache<byte[], byte[]> cache, byte[] query) {
-
+        System.out.println(cache.keySet());
+        System.out.println(cache.values());
         CresonRequest request = (CresonRequest) Marshalling.unmarshall(query);
         QueryFactory qf =  Search.getQueryFactory(cache);
         Query q = qf.create(request.getQueryString());
