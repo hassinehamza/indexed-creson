@@ -5,6 +5,7 @@ import org.infinispan.configuration.cache.CacheMode;
 import org.infinispan.configuration.cache.ConfigurationBuilder;
 import org.infinispan.configuration.cache.Index;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.context.Flag;
 import org.infinispan.creson.server.StateMachineInterceptor;
 import org.infinispan.creson.utils.ConfigurationHelper;
 import org.infinispan.interceptors.impl.CallInterceptor;
@@ -24,8 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -100,8 +103,13 @@ public class Server {
         if (useEC2)
             gbuilder.transport().addProperty("configurationFile", "jgroups-creson-ec2.xml");
 
-        ConfigurationBuilder builder = ConfigurationHelper.buildConfiguration(CacheMode.DIST_ASYNC,
-                replicationFactor, maxEntries, System.getProperty("store-creson-server" + host), false);
+        ConfigurationBuilder builder = ConfigurationHelper.buildConfiguration(
+                CacheMode.DIST_ASYNC,
+                replicationFactor,
+                maxEntries,
+                System.getProperty("store-creson-server" + host),
+                true);
+        builder.persistence().clearStores().passivation(false);
 
         final EmbeddedCacheManager cm = new DefaultCacheManager(gbuilder.build(), builder.build(),
                 true);
@@ -126,7 +134,44 @@ public class Server {
         server.start(hbuilder.build(), cm);
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-//        scheduler.schedule((Callable<Void>) () -> {
+
+        File folder = new File(userLib);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            if (file.isFile() && file.getName().matches(".*\\.jar")) {
+                loadLibrary(file);
+            }
+        }
+
+        builder.read(cm.getDefaultCacheConfiguration());
+        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
+        builder.compatibility().enabled(true); // for HotRod
+        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+        builder.indexing().index(Index.LOCAL)
+               .addProperty("default.directory_provider", "ram")
+               .addProperty("lucene_version", "LUCENE_CURRENT");
+        // builder.indexing().disable();
+//        for(Class clazz : indexedClasses) {
+//            System.out.println("clazz " + clazz);
+//            builder.indexing().addIndexedEntity(clazz);
+//        }
+     //  builder.indexing().addIndexedEntity(Obj.class);
+      // builder.indexing().disable();
+        builder.persistence().clearStores().passivation(false);
+
+        builder.clustering().stateTransfer().chunkSize(100);
+
+        cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
+        stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
+
+        System.out.println("LAUNCHED");
+        scheduler.schedule((Callable<Void>) () -> {
+            while(true) {
+                System.out.println("size=" + cm.getCache(CRESON_CACHE_NAME).getAdvancedCache().withFlags(Flag.CACHE_MODE_LOCAL).size());
+                Thread.sleep(1000);            }
+            }, 1, TimeUnit.SECONDS);
+
+            //        scheduler.schedule((Callable<Void>) () -> {
 //            while (true) {
 //                File folder = new File(userLib);
 //                File[] listOfFiles = folder.listFiles();
@@ -144,39 +189,6 @@ public class Server {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
-        File folder = new File(userLib);
-        File[] listOfFiles = folder.listFiles();
-        for (File file : listOfFiles) {
-            if (file.isFile() && file.getName().matches(".*\\.jar")) {
-                loadLibrary(file);
-            }
-        }
-
-        builder.read(cm.getDefaultCacheConfiguration());
-        StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
-        builder.compatibility().enabled(true); // for HotRod
-        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
-//       builder.indexing().index(Index.LOCAL)
-//               .addProperty("default.directory_provider", "ram")
-//               .addProperty("lucene_version", "LUCENE_CURRENT");
-        builder.indexing().disable();
-//        for(Class clazz : indexedClasses) {
-//            System.out.println("clazz " + clazz);
-//            builder.indexing().addIndexedEntity(clazz);
-//        }
-     //  builder.indexing().addIndexedEntity(Obj.class);
-      // builder.indexing().disable();
-        builder.persistence().clearStores().passivation(false);
-
-        builder.clustering().stateTransfer().chunkSize(100);
-
-        cm.defineConfiguration(CRESON_CACHE_NAME, builder.build());
-        stateMachineInterceptor.setup(Factory.forCache(cm.getCache(CRESON_CACHE_NAME)));
-
-
-        System.out.println("LAUNCHED");
-
 
         SignalHandler sh = s -> {
             System.out.println("CLOSING");

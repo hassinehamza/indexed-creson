@@ -23,8 +23,8 @@
     <Logger name="org.infinispan.server.hotrod.Decoder2x" level="ERROR"/>
 
     <Root level="INFO">
-      <AppenderRef ref="STDOUT" level="INFO"/>
-      <AppenderRef ref="File" level="INFO"/>
+      <AppenderRef ref="STDOUT" level="TRACE"/>
+      <AppenderRef ref="File" level="ERROR"/>
     </Root>
   </Loggers>
 </Configuration>
