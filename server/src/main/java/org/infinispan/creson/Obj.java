@@ -8,19 +8,19 @@ import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 
 @Entity
 @Indexed
-public class Obj{
-
-
+public class Obj {
 
     @Id
+    public String name;
+
     @Field
     public int x ;
 
-    public String name;
 
     public Obj() {}
 

@@ -156,14 +156,17 @@ public class Server {
         builder.read(cm.getDefaultCacheConfiguration());
         StateMachineInterceptor stateMachineInterceptor = new StateMachineInterceptor();
         builder.compatibility().enabled(true); // for HotRod
-       builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
-         builder.indexing().index(Index.LOCAL);
+        builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
+//       builder.indexing().index(Index.LOCAL)
+//               .addProperty("default.directory_provider", "ram")
+//               .addProperty("lucene_version", "LUCENE_CURRENT");
+        builder.indexing().disable();
 //        for(Class clazz : indexedClasses) {
 //            System.out.println("clazz " + clazz);
 //            builder.indexing().addIndexedEntity(clazz);
 //        }
-        builder.indexing().addIndexedEntity(Obj.class);
-        builder.indexing().enable();
+     //  builder.indexing().addIndexedEntity(Obj.class);
+      // builder.indexing().disable();
         builder.persistence().clearStores().passivation(false);
 
         builder.clustering().stateTransfer().chunkSize(100);
@@ -205,7 +208,7 @@ public class Server {
         try {
             jarFile = new JarInputStream(new FileInputStream(jar));
             while ((jarEntry = jarFile.getNextJarEntry()) != null) {
-                if (jarEntry.getName().endsWith(".class")) {
+                if (jarEntry.getName().contains("example") && jarEntry.getName().endsWith(".class")) {
                     String str = jarEntry.getName().replace('/', '.').substring(0,
                             jarEntry.getName().length() - 6);
                     Class<?> clazz;
