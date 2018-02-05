@@ -19,14 +19,12 @@ public class QueryFacadeImpl implements org.infinispan.server.core.QueryFacade{
     public byte[] query(AdvancedCache<byte[], byte[]> cache, byte[] query) {
 
         Cache<Object, Object> realCache = cache.getCacheManager().getCache(CRESON_CACHE_NAME);
-        System.out.println(realCache.getAdvancedCache().getCacheConfiguration());
         CresonRequest request = (CresonRequest) Marshalling.unmarshall(query);
         QueryFactory qf =  Search.getQueryFactory(realCache);
         Query q = qf.create(request.getQueryString());
         List<Object> list= q.list();
 
         CresonResponse response = new CresonResponse(list.size(), list);
-        System.out.println(list);
         return Marshalling.marshall(response);
     }
 }

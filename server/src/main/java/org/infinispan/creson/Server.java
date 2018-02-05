@@ -148,15 +148,9 @@ public class Server {
         builder.compatibility().enabled(true); // for HotRod
         builder.customInterceptors().addInterceptor().before(CallInterceptor.class).interceptor(stateMachineInterceptor);
         builder.indexing().index(Index.LOCAL)
-               .addProperty("default.directory_provider", "ram")
-               .addProperty("lucene_version", "LUCENE_CURRENT");
-        // builder.indexing().disable();
-//        for(Class clazz : indexedClasses) {
-//            System.out.println("clazz " + clazz);
-//            builder.indexing().addIndexedEntity(clazz);
-//        }
-     //  builder.indexing().addIndexedEntity(Obj.class);
-      // builder.indexing().disable();
+                .addProperty("default.directory_provider", "ram")
+                .addProperty("lucene_version", "LUCENE_CURRENT");
+
         builder.persistence().clearStores().passivation(false);
 
         builder.clustering().stateTransfer().chunkSize(100);
@@ -166,29 +160,12 @@ public class Server {
 
         System.out.println("LAUNCHED");
         scheduler.schedule((Callable<Void>) () -> {
-            while(true) {
+            while (true) {
                 System.out.println("size=" + cm.getCache(CRESON_CACHE_NAME).getAdvancedCache().withFlags(Flag.CACHE_MODE_LOCAL).size());
-                Thread.sleep(1000);            }
-            }, 1, TimeUnit.SECONDS);
+                Thread.sleep(5000);
+            }
+        }, 1, TimeUnit.SECONDS);
 
-            //        scheduler.schedule((Callable<Void>) () -> {
-//            while (true) {
-//                File folder = new File(userLib);
-//                File[] listOfFiles = folder.listFiles();
-//                for (File file : listOfFiles) {
-//                    if (file.isFile() && file.getName().matches(".*\\.jar")) {
-//                        loadLibrary(file);
-//                    }
-//                }
-//                Thread.sleep(1000);
-//            }
-//        }, 1, TimeUnit.SECONDS);
-//
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         SignalHandler sh = s -> {
             System.out.println("CLOSING");
