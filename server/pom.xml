@@ -116,12 +116,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>${project.groupId}</groupId>-->
-            <!--<artifactId>infinispan-client-hotrod</artifactId>-->
-            <!--<version>9.0.3.Final</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -134,12 +128,6 @@
             <artifactId>lucene-core</artifactId>
             <version>5.4.1</version>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.infinispan</groupId>-->
-            <!--<artifactId>infinispan-client-hotrod</artifactId>-->
-            <!--<version>9.0.3.Final</version>-->
-        <!--</dependency>-->
 
     </dependencies>
 

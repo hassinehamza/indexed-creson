@@ -1,4 +1,4 @@
-package org.infinispan.creson.search;
+package org.infinispan.creson.query;
 
 import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.impl.operations.RetryOnFailureOperation;
@@ -7,15 +7,11 @@ import org.infinispan.client.hotrod.impl.protocol.HeaderParams;
 import org.infinispan.client.hotrod.impl.transport.Transport;
 import org.infinispan.client.hotrod.impl.transport.TransportFactory;
 import org.infinispan.client.hotrod.impl.transport.tcp.TcpTransportFactory;
-import org.infinispan.creson.query.CresonRequest;
-import org.infinispan.creson.query.CresonResponse;
-import org.infinispan.creson.server.Marshalling;
+import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.marshall.core.JBossMarshaller;
-import org.jboss.marshalling.Marshaller;
-import org.jboss.marshalling.MarshallerFactory;
+
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Set;
@@ -36,24 +32,37 @@ public class QueryOperation extends RetryOnFailureOperation<CresonResponse> {
         if (!(transportFactory instanceof TcpTransportFactory)) {
             return transportFactory.getTransport(failedServers, this.cacheName);
         }
-
-        Collection<SocketAddress> servvers = ((TcpTransportFactory)transportFactory).getServers();
+        Collection<SocketAddress> servvers = ((TcpTransportFactory) transportFactory).getServers();
 
         return transportFactory.getAddressTransport(servvers.iterator().next());
-  }
+    }
 
     @Override
     protected CresonResponse executeOperation(Transport transport) {
+        Marshaller marshall = new JBossMarshaller();
         HeaderParams params = writeHeader(transport, QUERY_REQUEST);
         CresonRequest request = new CresonRequest();
         request.setMaxResults(remoteQuery.maxResults);
         request.setQueryString(remoteQuery.jpqlString);
         request.setStartOffset(remoteQuery.startOffset);
 
-        transport.writeArray(Marshalling.marshall(request));
-        transport.flush();
-        readHeaderAndValidate(transport, params);
-        byte[] responseBytes = transport.readArray();
-        return (CresonResponse) Marshalling.unmarshall(responseBytes);
+        try {
+            transport.writeArray(marshall.objectToByteBuffer(request));
+            transport.flush();
+            readHeaderAndValidate(transport, params);
+            byte[] responseBytes = transport.readArray();
+            return (CresonResponse) marshall.objectFromByteBuffer(responseBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
+
 }

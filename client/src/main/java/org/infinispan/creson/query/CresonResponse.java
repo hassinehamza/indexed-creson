@@ -12,7 +12,6 @@ public class CresonResponse implements Serializable {
         this.results = results;
     }
 
-
     public int getNumResults() {
         return numResults;
     }

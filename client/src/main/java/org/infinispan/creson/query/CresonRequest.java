@@ -1,11 +1,8 @@
 package org.infinispan.creson.query;
 
-import org.infinispan.query.remote.client.QueryRequest;
-
 import java.io.Serializable;
-import java.util.List;
 
-public class CresonRequest implements Serializable{
+public class CresonRequest implements Serializable {
     public String getQueryString() {
         return queryString;
     }

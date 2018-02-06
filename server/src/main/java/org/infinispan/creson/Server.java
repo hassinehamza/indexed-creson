@@ -183,11 +183,26 @@ public class Server {
         };
         Signal.handle(new Signal("INT"), sh);
         Signal.handle(new Signal("TERM"), sh);
+    }
 
-//    Thread.currentThread().interrupt();
-
-        //   System.exit(0);
-
+    public static synchronized void loadLibrary(java.io.File jar) {
+        try {
+            java.net.URLClassLoader loader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
+            java.net.URL url = jar.toURI().toURL();
+            for (java.net.URL it : java.util.Arrays.asList(loader.getURLs())) {
+                if (it.equals(url)) {
+                    return;
+                }
+            }
+            System.out.println("Loading " + jar.getName());
+            java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL",
+                    new Class[]{java.net.URL.class});
+            method.setAccessible(true); /* promote the method to public access */
+            method.invoke(loader, new Object[]{url});
+        } catch (final java.lang.NoSuchMethodException | java.lang.IllegalAccessException
+                | java.net.MalformedURLException | java.lang.reflect.InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private static ArrayList<Class<?>> findIndexedClass(java.io.File jar) {
@@ -197,7 +212,7 @@ public class Server {
         try {
             jarFile = new JarInputStream(new FileInputStream(jar));
             while ((jarEntry = jarFile.getNextJarEntry()) != null) {
-                if (jarEntry.getName().contains("example") && jarEntry.getName().endsWith(".class")) {
+                if (jarEntry.getName().endsWith(".class")) {
                     String str = jarEntry.getName().replace('/', '.').substring(0,
                             jarEntry.getName().length() - 6);
                     Class<?> clazz;
@@ -220,27 +235,6 @@ public class Server {
             e.printStackTrace();
         }
         return indexed;
-    }
-
-    public static synchronized void loadLibrary(java.io.File jar) {
-        try {
-            java.net.URLClassLoader loader = (java.net.URLClassLoader) ClassLoader.getSystemClassLoader();
-            java.net.URL url = jar.toURI().toURL();
-            for (java.net.URL it : java.util.Arrays.asList(loader.getURLs())) {
-                if (it.equals(url)) {
-                    return;
-                }
-            }
-            System.out.println("Loading " + jar.getName());
-            java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL",
-                    new Class[]{java.net.URL.class});
-            method.setAccessible(true); /* promote the method to public access */
-            method.invoke(loader, new Object[]{url});
-            indexedClasses = findIndexedClass(jar);
-        } catch (final java.lang.NoSuchMethodException | java.lang.IllegalAccessException
-                | java.net.MalformedURLException | java.lang.reflect.InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 
     public static ArrayList<Class<?>> getIndexedClass() {

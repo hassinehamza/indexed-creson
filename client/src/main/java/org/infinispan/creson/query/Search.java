@@ -1,5 +1,4 @@
-package org.infinispan.creson.search;
-
+package org.infinispan.creson.query;
 
 
 import org.infinispan.client.hotrod.RemoteCache;
@@ -7,7 +6,8 @@ import org.infinispan.client.hotrod.impl.RemoteCacheImpl;
 
 public class Search {
 
-    private Search() {}
+    private Search() {
+    }
 
     public static QueryFactory getQueryFactory(RemoteCache cache) {
         if (cache == null) {

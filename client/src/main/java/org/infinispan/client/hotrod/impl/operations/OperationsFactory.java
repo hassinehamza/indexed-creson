@@ -10,7 +10,7 @@ import org.infinispan.client.hotrod.impl.protocol.Codec;
 import org.infinispan.client.hotrod.impl.protocol.HotRodConstants;
 import org.infinispan.client.hotrod.impl.transport.Transport;
 import org.infinispan.client.hotrod.impl.transport.TransportFactory;
-import org.infinispan.creson.search.QueryOperation;
+import org.infinispan.creson.query.QueryOperation;
 
 import java.util.Map;
 import java.util.Set;
@@ -194,8 +194,8 @@ public class OperationsFactory implements HotRodConstants {
                 codec, transportFactory, cacheNameBytes, topologyId, flags(), clientIntelligence);
     }
 
-    /*public org.infinispan.creson.search.QueryOperation newQueryOperation(RemoteQuery remoteQuery) {
-        return new org.infinispan.creson.search.QueryOperation(
+    /*public org.infinispan.creson.query.QueryOperation newQueryOperation(RemoteQuery remoteQuery) {
+        return new org.infinispan.creson.query.QueryOperation(
                 codec, transportFactory, cacheNameBytes, topologyId, flags(), clientIntelligence, remoteQuery);
     }*/
 
@@ -233,7 +233,7 @@ public class OperationsFactory implements HotRodConstants {
 
     public void setFlags(Flag[] flags) {
         int intFlags = 0;
-        for(Flag flag : flags)
+        for (Flag flag : flags)
             intFlags |= flag.getFlagInt();
         this.flagsMap.set(intFlags);
     }
@@ -251,7 +251,7 @@ public class OperationsFactory implements HotRodConstants {
         return transportFactory.getCacheTopologyInfo(cacheNameBytes);
     }
 
-    public org.infinispan.creson.search.QueryOperation newCresonQueryOperation(org.infinispan.creson.search.RemoteQuery remoteQuery) {
+    public org.infinispan.creson.query.QueryOperation newCresonQueryOperation(org.infinispan.creson.query.RemoteQuery remoteQuery) {
         return new QueryOperation(
                 codec, transportFactory, cacheNameBytes, topologyId, flags(), clientIntelligence, remoteQuery
         );
